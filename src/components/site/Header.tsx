@@ -40,7 +40,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             to="/donate"
-            className="inline-flex items-center gap-2 rounded-full gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/20 transition-transform hover:scale-[1.03]"
+            className="hidden sm:inline-flex items-center gap-2 rounded-full gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/20 transition-transform hover:scale-[1.03]"
           >
             <Heart className="h-4 w-4 fill-current" /> Donate
           </Link>
@@ -66,6 +66,15 @@ export function Header() {
                 {n.label}
               </Link>
             ))}
+            <div className="mt-2 border-t border-border pt-2">
+              <Link
+                to="/donate"
+                onClick={() => setOpen(false)}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md gradient-brand px-3 py-2 text-sm font-semibold text-white shadow-sm"
+              >
+                <Heart className="h-4 w-4 fill-current" /> Donate Now
+              </Link>
+            </div>
           </nav>
         </div>
       )}
