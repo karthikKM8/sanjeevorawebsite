@@ -1,0 +1,1 @@
+import{u as e}from"./link-f9JKqC-U.js";import{_ as t,n}from"./index-CXvevaXu.js";var r=e(),i=()=>(0,r.jsx)(t,{to:`/donate/thank-you`,search:n.useSearch()});export{i as component};
