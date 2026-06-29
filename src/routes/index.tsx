@@ -10,7 +10,6 @@ import { HowItHelps } from "@/components/sections/HowItHelps";
 import { VolunteerForm } from "@/components/sections/VolunteerForm";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Updates } from "@/components/sections/Updates";
-import { Partners } from "@/components/sections/Partners";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { Contact } from "@/components/sections/Contact";
 
@@ -40,7 +39,6 @@ function Index() {
       <VolunteerForm />
       <Testimonials />
       <Updates />
-      <Partners />
       <Newsletter />
       <Contact />
     </SiteShell>

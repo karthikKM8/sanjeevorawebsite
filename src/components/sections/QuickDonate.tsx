@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Heart, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-const PRESETS = [5000, 8000, 14000] as const;
+const PRESETS = [5000, 8000, 14000, 20000] as const;
 
 export function QuickDonate() {
   const navigate = useNavigate();
@@ -28,32 +28,31 @@ export function QuickDonate() {
 
   return (
     <div className="relative w-full max-w-md rounded-3xl border border-border bg-white/95 p-6 shadow-2xl shadow-primary/10 backdrop-blur sm:p-7">
-      <div className="mb-4 flex items-center gap-2">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full gradient-brand text-white">
-          <Heart className="h-4 w-4 fill-current" />
+      <div className="mb-5 flex items-center gap-3">
+        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#22c55e] text-white">
+          <Heart className="h-5 w-5 fill-current" />
         </span>
         <div>
-          <h3 className="font-display text-lg font-bold leading-none">Make a donation</h3>
-          <p className="text-xs text-muted-foreground">100% goes to programs on the ground</p>
+          <h3 className="font-display text-[1.1rem] font-bold leading-tight text-foreground">Make a Difference Today</h3>
+          <p className="text-[13px] text-muted-foreground">Every contribution helps create opportunities</p>
         </div>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-foreground/70">
+          <label className="mb-2.5 block text-xs font-bold uppercase tracking-wider text-foreground/60">
             Choose amount
           </label>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <button
                 type="button"
                 key={p}
                 onClick={() => setAmount(p)}
-                className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
-                  amount === p
-                    ? "border-primary bg-primary text-white shadow"
+                className={`flex-1 min-w-[70px] whitespace-nowrap rounded-full border px-3 py-2 text-sm font-semibold transition ${amount === p
+                    ? "border-primary bg-primary text-white shadow-sm"
                     : "border-border bg-background hover:border-primary/50"
-                }`}
+                  }`}
               >
                 ₹{p.toLocaleString("en-IN")}
               </button>
@@ -61,11 +60,10 @@ export function QuickDonate() {
             <button
               type="button"
               onClick={() => setAmount("custom")}
-              className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
-                amount === "custom"
-                  ? "border-primary bg-primary text-white shadow"
+              className={`flex-1 min-w-[80px] rounded-full border px-3 py-2 text-sm font-semibold transition ${amount === "custom"
+                  ? "border-primary bg-primary text-white shadow-sm"
                   : "border-border bg-background hover:border-primary/50"
-              }`}
+                }`}
             >
               Custom
             </button>
@@ -112,7 +110,7 @@ export function QuickDonate() {
           Donate {finalAmount ? `₹${finalAmount.toLocaleString("en-IN")}` : ""} Securely
         </button>
         <p className="text-center text-[11px] text-muted-foreground">
-          You'll be redirected to a secure payment page (Razorpay / Stripe).
+          You'll be redirected to a secure payment page.
         </p>
       </form>
     </div>

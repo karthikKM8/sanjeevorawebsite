@@ -90,13 +90,13 @@ export function Hero() {
           </div>
         </motion.div>
 
-        <div className="lg:hidden">
+        <div className="lg:hidden w-full max-w-[420px] mx-auto">
           <img
             src={hero}
             alt="Children smiling in a Sanjeevora Vidya Mission-supported classroom"
             width={1600}
             height={1024}
-            className="rounded-3xl border border-border object-cover shadow-xl"
+            className="h-64 w-full sm:h-80 rounded-[2rem] border border-border object-cover shadow-xl"
           />
         </div>
       </div>
