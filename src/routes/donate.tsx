@@ -40,7 +40,6 @@ function DonatePage() {
   const [name, setName] = useState(sp.name ?? "");
   const [email, setEmail] = useState(sp.email ?? "");
   const [cause, setCause] = useState<string>(sp.cause ?? "general");
-  const [gateway, setGateway] = useState<"razorpay" | "stripe">("razorpay");
   const [busy, setBusy] = useState(false);
 
   const PRESETS = frequency === "monthly" ? MONTHLY_PRESETS : ONE_TIME_PRESETS;
@@ -48,34 +47,7 @@ function DonatePage() {
   async function pay() {
     if (!name.trim() || !email.trim()) return toast.error("Name and email are required");
     if (!amount || amount < 10) return toast.error("Minimum donation is ₹10");
-    setBusy(true);
-    try {
-      // === Payment gateway integration placeholder ===
-      // Real Razorpay flow would call window.Razorpay({ key, amount: amount*100, ... }).open()
-      // Real Stripe flow would call a server fn to create a Checkout Session and redirect.
-      const ref = `${gateway.toUpperCase()}_${Date.now()}`;
-      const ok = Math.random() > 0.1; // simulate 90% success
-      const status = ok ? "succeeded" : "failed";
-      const donation = await insertDonation({
-        donor_name: name.trim(),
-        donor_email: email.trim(),
-        amount,
-        cause,
-        payment_gateway: gateway,
-        payment_status: status,
-        payment_reference: ref,
-      });
-      await new Promise((r) => setTimeout(r, 700));
-      navigate({
-        to: ok ? "/donate/thank-you" : "/donate/failure",
-        search: { id: donation.id, amount, name, ref },
-      });
-    } catch (e) {
-      console.error(e);
-      toast.error("Payment could not start. Please try again.");
-    } finally {
-      setBusy(false);
-    }
+    toast.info("Payment Gateway Coming Soon");
   }
 
   return (
@@ -151,11 +123,6 @@ function DonatePage() {
               <input required type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary" />
             </div>
 
-            <h2 className="mt-8 font-display text-xl font-bold">4. Payment method</h2>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <GatewayCard label="Razorpay" desc="UPI, Cards, Net Banking" current={gateway} value="razorpay" set={setGateway} />
-              <GatewayCard label="Stripe" desc="International cards" current={gateway} value="stripe" set={setGateway} />
-            </div>
           </div>
 
           <aside className="h-fit rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
@@ -165,7 +132,6 @@ function DonatePage() {
               <Row k="Email" v={email || "—"} />
               <Row k="Frequency" v={frequency === "monthly" ? "Monthly" : "One-Time"} />
               <Row k="Cause" v={cause === "general" ? "Where most needed" : (CAUSES.find((c) => c.slug === cause)?.title ?? cause)} />
-              <Row k="Method" v={gateway === "razorpay" ? "Razorpay" : "Stripe"} />
               <div className="my-3 border-t border-border" />
               <Row k="Donation" v={`₹${amount?.toLocaleString("en-IN") || 0}${frequency === "monthly" ? " /mo" : ""}`} bold />
             </dl>
@@ -196,16 +162,6 @@ function CauseChip({ value, cur, set, label }: { value: string; cur: string; set
   return (
     <button onClick={() => set(value)} className={`rounded-full border px-3.5 py-1.5 text-sm ${cur === value ? "border-primary bg-primary text-white" : "border-border hover:border-primary/50"}`}>
       {label}
-    </button>
-  );
-}
-
-function GatewayCard({ label, desc, value, current, set }: { label: string; desc: string; value: "razorpay" | "stripe"; current: string; set: (v: "razorpay" | "stripe") => void }) {
-  const active = current === value;
-  return (
-    <button onClick={() => set(value)} className={`rounded-2xl border p-4 text-left ${active ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}>
-      <p className="font-semibold">{label}</p>
-      <p className="text-xs text-muted-foreground">{desc}</p>
     </button>
   );
 }
