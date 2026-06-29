@@ -20,9 +20,8 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <img src={logo} alt="Sanjeevora Vidya Mission" width={36} height={36} className="h-9 w-9 object-contain" />
-          <span className="font-display text-base font-bold tracking-tight text-foreground sm:text-xl">
-            <span className="sm:hidden">Sanjeevora</span>
-            <span className="hidden sm:inline">Sanjeevora Vidya Mission</span>
+          <span className="font-display text-[15px] font-bold leading-tight tracking-tight text-foreground sm:text-xl">
+            Sanjeevora Vidya Mission
           </span>
         </Link>
         <nav className="hidden items-center gap-1 lg:flex">
