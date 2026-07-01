@@ -3,26 +3,35 @@ import { useNavigate } from "@tanstack/react-router";
 import { Heart, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-const PRESETS = [5000, 8000, 14000, 20000] as const;
+const ONE_TIME_PRESETS = [5000, 8000, 14000, 20000] as const;
+const MONTHLY_PRESETS = [800, 1600, 2400, 5000] as const;
+
+const CAUSES = [
+  "Where Most Needed",
+  "Nutrition Support",
+  "Education Support",
+  "Child Development",
+  "Career Readiness",
+];
 
 export function QuickDonate() {
   const navigate = useNavigate();
+  const [frequency, setFrequency] = useState<"one-time" | "monthly">("one-time");
   const [amount, setAmount] = useState<number | "custom">(5000);
   const [custom, setCustom] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [cause, setCause] = useState(CAUSES[0]);
   const [busy, setBusy] = useState(false);
 
+  const PRESETS = frequency === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS;
   const finalAmount = amount === "custom" ? Number(custom) : amount;
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return toast.error("Please add your name and email");
     if (!finalAmount || finalAmount < 10) return toast.error("Please enter an amount of at least ₹10");
     setBusy(true);
     navigate({
       to: "/donate",
-      search: { amount: finalAmount, name, email },
+      search: { amount: finalAmount, frequency, cause },
     }).finally(() => setBusy(false));
   }
 
@@ -38,7 +47,30 @@ export function QuickDonate() {
         </div>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-5">
+        <div>
+          <label className="mb-2.5 block text-xs font-bold uppercase tracking-wider text-foreground/60">
+            Donation Frequency
+          </label>
+          <div className="flex rounded-xl border border-border bg-background p-1">
+            {(["one-time", "monthly"] as const).map((f) => (
+              <button
+                type="button"
+                key={f}
+                onClick={() => {
+                  setFrequency(f);
+                  setAmount((f === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS)[0]);
+                }}
+                className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+                  frequency === f ? "bg-primary text-white shadow-sm" : "text-foreground/70 hover:text-foreground"
+                }`}
+              >
+                {f === "one-time" ? "One-Time" : "Monthly"}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div>
           <label className="mb-2.5 block text-xs font-bold uppercase tracking-wider text-foreground/60">
             Choose amount
@@ -49,10 +81,11 @@ export function QuickDonate() {
                 type="button"
                 key={p}
                 onClick={() => setAmount(p)}
-                className={`flex-1 min-w-[70px] whitespace-nowrap rounded-full border px-3 py-2 text-sm font-semibold transition ${amount === p
+                className={`flex-1 min-w-[70px] whitespace-nowrap rounded-full border px-3 py-2 text-sm font-semibold transition ${
+                  amount === p
                     ? "border-primary bg-primary text-white shadow-sm"
                     : "border-border bg-background hover:border-primary/50"
-                  }`}
+                }`}
               >
                 ₹{p.toLocaleString("en-IN")}
               </button>
@@ -60,10 +93,11 @@ export function QuickDonate() {
             <button
               type="button"
               onClick={() => setAmount("custom")}
-              className={`flex-1 min-w-[80px] rounded-full border px-3 py-2 text-sm font-semibold transition ${amount === "custom"
+              className={`flex-1 min-w-[80px] rounded-full border px-3 py-2 text-sm font-semibold transition ${
+                amount === "custom"
                   ? "border-primary bg-primary text-white shadow-sm"
                   : "border-border bg-background hover:border-primary/50"
-                }`}
+              }`}
             >
               Custom
             </button>
@@ -83,22 +117,19 @@ export function QuickDonate() {
           )}
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          <input
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Full name"
-            className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary"
-          />
-          <input
-            required
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email address"
-            className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary"
-          />
+        <div>
+          <label className="mb-2.5 block text-xs font-bold uppercase tracking-wider text-foreground/60">
+            Support a Cause
+          </label>
+          <select
+            value={cause}
+            onChange={(e) => setCause(e.target.value)}
+            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary"
+          >
+            {CAUSES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </div>
 
         <button
@@ -107,11 +138,8 @@ export function QuickDonate() {
           className="group inline-flex w-full items-center justify-center gap-2 rounded-xl gradient-brand px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/30 transition hover:shadow-xl disabled:opacity-60"
         >
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Heart className="h-4 w-4 fill-current" />}
-          Donate {finalAmount ? `₹${finalAmount.toLocaleString("en-IN")}` : ""} Securely
+          Donate {finalAmount ? `₹${finalAmount.toLocaleString("en-IN")}` : ""}
         </button>
-        <p className="text-center text-[11px] text-muted-foreground">
-          You'll be redirected to a secure payment page.
-        </p>
       </form>
     </div>
   );

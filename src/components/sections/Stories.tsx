@@ -1,27 +1,21 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
-import story1 from "@/assets/1 (8).jpeg";
-import story2 from "@/assets/1 (1).jpeg";
-import story3 from "@/assets/1 (2).jpeg";
 import { Reveal } from "../site/Reveal";
 
 const STORIES = [
   {
-    img: story1,
     name: "Priya, 14 — Karnataka",
     story:
       "Priya skipped school often because there was rarely food at home. With daily nutrition support and tutoring, she's now the first in her family to qualify for the district science olympiad.",
     impact: "Back in school. Full scholarship secured.",
   },
   {
-    img: story2,
     name: "Aarthi, 19 — Bengaluru",
     story:
       "Through our career readiness program — digital literacy, communication training and mentorship — Aarthi landed her first full-time job and now supports her younger siblings' education.",
     impact: "First job. Financially independent.",
   },
   {
-    img: story3,
     name: "Ravi, 12 — Tamil Nadu",
     story:
       "Once shy and falling behind in class, Ravi joined our child-development program. With mentoring, art classes and leadership workshops, he now leads his school's debate club.",
@@ -45,16 +39,7 @@ export function Stories() {
         </Reveal>
 
         <Reveal>
-          <div className="mt-12 grid gap-8 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-2">
-            <img
-              key={s.img}
-              src={s.img}
-              alt={s.name}
-              loading="lazy"
-              width={600}
-              height={600}
-              className="h-full max-h-[420px] w-full object-cover"
-            />
+          <div className="mt-12 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
             <div className="flex flex-col justify-between p-7 sm:p-10">
               <div>
                 <Quote className="h-8 w-8 text-primary" />

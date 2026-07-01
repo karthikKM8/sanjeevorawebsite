@@ -1,13 +1,5 @@
 import { Reveal } from "../site/Reveal";
-import { Counter } from "../site/Counter";
 import { Target, Eye } from "lucide-react";
-
-const STATS = [
-  { label: "Children Supported", value: 24500, suffix: "+" },
-  { label: "Meals Served", value: 860000, suffix: "+" },
-  { label: "Communities Reached", value: 320, suffix: "" },
-  { label: "Young Adults Trained", value: 4100, suffix: "+" },
-];
 
 export function About() {
   return (
@@ -59,21 +51,6 @@ export function About() {
               </p>
             </div>
           </Reveal>
-        </div>
-
-        <div className="mt-12 grid grid-cols-2 gap-4 rounded-3xl border border-border bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-4">
-          {STATS.map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.08}>
-              <div className="text-center">
-                <div className="font-display text-3xl font-extrabold text-primary sm:text-4xl">
-                  <Counter to={s.value} suffix={s.suffix} />
-                </div>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wider text-muted-foreground sm:text-sm">
-                  {s.label}
-                </p>
-              </div>
-            </Reveal>
-          ))}
         </div>
       </div>
     </section>

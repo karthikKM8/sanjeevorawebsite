@@ -1,10 +1,29 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
-import hero from "@/assets/1 (1).jpeg";
-import { QuickDonate } from "./QuickDonate";
+import { useState, useEffect } from "react";
+
+import img1 from "@/assets/1 (1).jpeg";
+import img2 from "@/assets/1 (2).jpeg";
+import img3 from "@/assets/1 (3).jpeg";
+import img4 from "@/assets/1 (4).jpeg";
+import img5 from "@/assets/1 (5).jpeg";
+import img6 from "@/assets/1 (6).jpeg";
+import img7 from "@/assets/1 (7).jpeg";
+import img8 from "@/assets/1 (8).jpeg";
+
+const IMAGES = [img1, img2, img3, img4, img5, img6, img7, img8];
 
 export function Hero() {
+  const [currentIdx, setCurrentIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIdx((prev) => (prev + 1) % IMAGES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 gradient-soft" aria-hidden />
@@ -13,15 +32,6 @@ export function Hero() {
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-4 pb-20 pt-12 sm:px-6 lg:grid-cols-[1.1fr_minmax(0,1fr)] lg:gap-8 lg:px-8 lg:pt-20">
         <div className="flex flex-col justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-white px-3.5 py-1.5 text-xs font-medium text-[#22c55e] shadow-sm"
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            Trusted by 12,000+ donors across India
-          </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -74,30 +84,61 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="flex flex-col items-center justify-start gap-8 lg:items-end"
+          className="flex flex-col justify-center"
         >
-          <div className="w-full max-w-[420px]">
-            <QuickDonate />
-          </div>
-          <div className="hidden w-full max-w-[420px] overflow-hidden rounded-[2rem] lg:block">
-            <img
-              src={hero}
-              alt="Children smiling in a Sanjeevora Vidya Mission-supported classroom"
-              width={1600}
-              height={1024}
-              className="h-64 w-full object-cover"
-            />
+          <div className="hidden w-full overflow-hidden rounded-[2rem] lg:block relative h-[500px]">
+            <AnimatePresence mode="popLayout">
+              <motion.img
+                key={currentIdx}
+                src={IMAGES[currentIdx]}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
+                alt="Children smiling in a Sanjeevora Vidya Mission-supported classroom"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </AnimatePresence>
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
+              {IMAGES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentIdx(i)}
+                  className={`h-1.5 rounded-full transition-all ${
+                    currentIdx === i ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/75"
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </motion.div>
 
-        <div className="lg:hidden w-full max-w-[420px] mx-auto">
-          <img
-            src={hero}
-            alt="Children smiling in a Sanjeevora Vidya Mission-supported classroom"
-            width={1600}
-            height={1024}
-            className="h-64 w-full sm:h-80 rounded-[2rem] border border-border object-cover shadow-xl"
-          />
+        <div className="lg:hidden w-full max-w-[420px] mx-auto relative h-64 sm:h-80 rounded-[2rem] overflow-hidden shadow-xl border border-border">
+          <AnimatePresence mode="popLayout">
+            <motion.img
+              key={currentIdx}
+              src={IMAGES[currentIdx]}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              alt="Children smiling in a Sanjeevora Vidya Mission-supported classroom"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </AnimatePresence>
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10">
+            {IMAGES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIdx(i)}
+                className={`h-1.5 rounded-full transition-all ${
+                  currentIdx === i ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/75"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -5,7 +5,6 @@ import { About } from "@/components/sections/About";
 import { Causes } from "@/components/sections/Causes";
 import { Reality } from "@/components/sections/Reality";
 import { Stories } from "@/components/sections/Stories";
-import { Impact } from "@/components/sections/Impact";
 import { HowItHelps } from "@/components/sections/HowItHelps";
 import { VolunteerForm } from "@/components/sections/VolunteerForm";
 import { Testimonials } from "@/components/sections/Testimonials";
@@ -35,7 +34,6 @@ function Index() {
       <Reality />
       <HowItHelps />
       <Stories />
-      <Impact />
       <VolunteerForm />
       <Testimonials />
       <Updates />

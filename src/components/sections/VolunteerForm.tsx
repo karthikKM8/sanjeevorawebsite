@@ -53,10 +53,6 @@ export function VolunteerForm() {
                   <div key={w} className="rounded-xl bg-white px-3 py-2 font-medium shadow-sm">{w}</div>
                 ))}
               </div>
-              <div className="mt-6 inline-flex items-center gap-3 rounded-2xl bg-white px-4 py-3 text-sm shadow">
-                <HandHeart className="h-5 w-5 text-primary" />
-                <span className="font-medium">1,842 active volunteers — and counting</span>
-              </div>
             </Reveal>
           </div>
           <form onSubmit={onSubmit} className="space-y-4 p-8 sm:p-10">

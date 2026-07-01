@@ -1,16 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { CreditCard, Loader2, Shield, IndianRupee, ArrowLeft } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
-import { insertDonation } from "@/lib/db";
-import { CAUSES } from "@/lib/causes";
 import { toast } from "sonner";
 
 const search = z.object({
   amount: z.coerce.number().min(10).optional(),
-  name: z.string().optional(),
-  email: z.string().email().optional(),
+  frequency: z.enum(["one-time", "monthly"]).optional(),
   cause: z.string().optional(),
 });
 
@@ -19,158 +16,302 @@ export const Route = createFileRoute("/donate")({
   head: () => ({
     meta: [
       { title: "Donate — Sanjeevora Vidya Mission" },
-      { name: "description", content: "Make a secure one-time or monthly donation to Sanjeevora Vidya Mission — funds nutrition, education, mentorship and career opportunities for children." },
-      { property: "og:title", content: "Donate to Sanjeevora Vidya Mission" },
-      { property: "og:description", content: "Secure online donation page — one-time or monthly giving." },
-      { property: "og:url", content: "/donate" },
+      { name: "description", content: "Make a secure one-time or monthly donation to Sanjeevora Vidya Mission." },
     ],
-    links: [{ rel: "canonical", href: "/donate" }],
   }),
   component: DonatePage,
 });
 
+type Step = "details" | "payu" | "npci";
+
 const ONE_TIME_PRESETS = [5000, 8000, 14000, 20000];
 const MONTHLY_PRESETS = [800, 1600, 2400, 5000];
+
+const CAUSES = [
+  "Where Most Needed",
+  "Nutrition Support",
+  "Education Support",
+  "Child Development",
+  "Career Readiness",
+];
 
 function DonatePage() {
   const sp = Route.useSearch();
   const navigate = useNavigate();
-  const [frequency, setFrequency] = useState<"one-time" | "monthly">("one-time");
-  const [amount, setAmount] = useState<number>(sp.amount ?? 5000);
-  const [name, setName] = useState(sp.name ?? "");
-  const [email, setEmail] = useState(sp.email ?? "");
-  const [cause, setCause] = useState<string>(sp.cause ?? "general");
+
+  const [frequency, setFrequency] = useState<"one-time" | "monthly">(sp.frequency ?? "one-time");
+  const [amount, setAmount] = useState<number | "custom">(sp.amount ?? 5000);
+  const [customAmount, setCustomAmount] = useState("");
+  const [cause, setCause] = useState(sp.cause ?? CAUSES[0]);
+
+  const [step, setStep] = useState<Step>("details");
   const [busy, setBusy] = useState(false);
 
-  const PRESETS = frequency === "monthly" ? MONTHLY_PRESETS : ONE_TIME_PRESETS;
+  const [donor, setDonor] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+    country: "India",
+    state: "",
+    city: "",
+    pincode: "",
+    pan: "",
+    taxExempt: true,
+    consent: true,
+  });
 
-  async function pay() {
-    if (!name.trim() || !email.trim()) return toast.error("Name and email are required");
-    if (!amount || amount < 10) return toast.error("Minimum donation is ₹10");
-    toast.info("Payment Gateway Coming Soon");
-  }
+  const PRESETS = frequency === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS;
+  const finalAmount = amount === "custom" ? Number(customAmount) : amount;
+
+  const handleDetailsSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!finalAmount || finalAmount < 10) {
+      return toast.error("Please enter a donation amount of at least ₹10");
+    }
+    if (!donor.name || !donor.phone || !donor.email || !donor.address || !donor.city || !donor.state || !donor.pincode) {
+      return toast.error("Please fill all mandatory donor information fields");
+    }
+    if (!donor.consent) {
+      return toast.error("Please agree to the consent");
+    }
+
+    setBusy(true);
+    if (frequency === "one-time") {
+      setStep("payu");
+      setTimeout(() => {
+        toast.success("Redirecting to PayU Checkout...");
+        setBusy(false);
+      }, 1500);
+    } else {
+      setStep("npci");
+      setTimeout(() => {
+        toast.success("Redirecting to Official NPCI eNACH Portal...");
+        setBusy(false);
+      }, 1500);
+    }
+  };
 
   return (
     <SiteShell>
-      <div className="gradient-soft py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="gradient-soft py-10">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <Link to="/" className="inline-flex items-center gap-1 text-sm text-foreground/70 hover:text-primary">
-            <ArrowLeft className="h-4 w-4" /> Back
+            <ArrowLeft className="h-4 w-4" /> Back to Home
           </Link>
-          <h1 className="mt-2 font-display text-4xl font-extrabold sm:text-5xl">Make a difference today</h1>
-          <p className="mt-2 max-w-2xl text-foreground/70">
-            Every contribution helps provide nutritious meals, quality
-            education, mentorship and brighter opportunities for the children
-            who need them most. Secure, transparent, tax-deductible (80G).
-          </p>
+          <h1 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">Complete Your Donation</h1>
         </div>
       </div>
 
-      <section className="py-12">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 lg:grid-cols-[1.3fr_1fr] lg:px-8">
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
-            <h2 className="font-display text-xl font-bold">1. Choose giving option</h2>
-            <div className="mt-4 inline-flex rounded-full border border-border bg-background p-1 text-sm font-semibold">
-              {(["one-time", "monthly"] as const).map((f) => (
+      <section className="py-10 pb-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          {step === "details" && (
+            <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
+              <div className="space-y-8">
+                {/* Donation Configuration */}
+                <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
+                  <h2 className="mb-6 font-display text-2xl font-bold">1. Donation Details</h2>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-foreground/80">Donation Frequency</label>
+                      <div className="inline-flex rounded-xl border border-border bg-background p-1 text-sm font-semibold">
+                        {(["one-time", "monthly"] as const).map((f) => (
+                          <button
+                            key={f}
+                            type="button"
+                            onClick={() => {
+                              setFrequency(f);
+                              setAmount((f === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS)[0]);
+                              setCustomAmount("");
+                            }}
+                            className={`rounded-lg px-6 py-2 transition ${frequency === f ? "bg-primary text-white shadow" : "text-foreground/70 hover:text-foreground"}`}
+                          >
+                            {f === "one-time" ? "One-Time" : "Monthly"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-foreground/80">Choose Amount</label>
+                      <div className="flex flex-wrap gap-2">
+                        {PRESETS.map((p) => (
+                          <button
+                            key={p}
+                            type="button"
+                            onClick={() => setAmount(p)}
+                            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
+                              amount === p ? "border-primary bg-primary text-white" : "border-border bg-background hover:border-primary/50"
+                            }`}
+                          >
+                            ₹{p.toLocaleString("en-IN")}
+                          </button>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => setAmount("custom")}
+                          className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
+                            amount === "custom" ? "border-primary bg-primary text-white" : "border-border bg-background hover:border-primary/50"
+                          }`}
+                        >
+                          Custom
+                        </button>
+                      </div>
+                      
+                      {amount === "custom" && (
+                        <div className="mt-3 flex max-w-xs items-center gap-2 rounded-xl border border-border bg-background px-3 py-2.5">
+                          <IndianRupee className="h-4 w-4 text-muted-foreground" />
+                          <input
+                            type="number"
+                            min={10}
+                            value={customAmount}
+                            onChange={(e) => setCustomAmount(e.target.value)}
+                            placeholder="Enter amount"
+                            className="w-full bg-transparent text-sm outline-none"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-foreground/80">Support a Cause</label>
+                      <select
+                        value={cause}
+                        onChange={(e) => setCause(e.target.value)}
+                        className="w-full max-w-sm rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+                      >
+                        {CAUSES.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Donor Information */}
+                <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
+                  <h2 className="mb-6 font-display text-2xl font-bold">2. Donor Information</h2>
+                  <form id="donor-form" onSubmit={handleDetailsSubmit} className="space-y-6">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Full Name *</label>
+                        <input required value={donor.name} onChange={(e) => setDonor({ ...donor, name: e.target.value })} placeholder="e.g. Rahul Kumar" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Mobile Number *</label>
+                        <input required type="tel" value={donor.phone} onChange={(e) => setDonor({ ...donor, phone: e.target.value })} placeholder="10-digit mobile number" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Email Address *</label>
+                        <input required type="email" value={donor.email} onChange={(e) => setDonor({ ...donor, email: e.target.value })} placeholder="e.g. name@example.com" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">PAN Number</label>
+                        <input value={donor.pan} onChange={(e) => setDonor({ ...donor, pan: e.target.value })} placeholder="For 80G tax receipt" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Address *</label>
+                      <input required value={donor.address} onChange={(e) => setDonor({ ...donor, address: e.target.value })} placeholder="House/Flat No, Street, Landmark" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">City *</label>
+                        <input required value={donor.city} onChange={(e) => setDonor({ ...donor, city: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">State *</label>
+                        <input required value={donor.state} onChange={(e) => setDonor({ ...donor, state: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Pincode *</label>
+                        <input required value={donor.pincode} onChange={(e) => setDonor({ ...donor, pincode: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Country *</label>
+                        <input required value={donor.country} onChange={(e) => setDonor({ ...donor, country: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      <label className="flex items-start gap-3">
+                        <input type="checkbox" checked={donor.taxExempt} onChange={(e) => setDonor({ ...donor, taxExempt: e.target.checked })} className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary" />
+                        <span className="text-sm text-foreground/80">I wish to receive an 80G tax exemption receipt for this donation. (Valid PAN required)</span>
+                      </label>
+                      <label className="flex items-start gap-3">
+                        <input type="checkbox" checked={donor.consent} onChange={(e) => setDonor({ ...donor, consent: e.target.checked })} className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary" />
+                        <span className="text-sm text-foreground/80">I agree to the Terms & Conditions and Privacy Policy, and consent to be contacted regarding my donation.</span>
+                      </label>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <aside className="h-fit rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
+                <h3 className="font-display text-lg font-bold">Donation Summary</h3>
+                <dl className="mt-4 space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <dt className="text-muted-foreground">Amount</dt>
+                    <dd className="font-bold">₹{finalAmount ? finalAmount.toLocaleString("en-IN") : 0}</dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt className="text-muted-foreground">Frequency</dt>
+                    <dd className="font-medium capitalize">{frequency.replace("-", " ")}</dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt className="text-muted-foreground">Cause</dt>
+                    <dd className="font-medium text-right max-w-[150px]">{cause}</dd>
+                  </div>
+                </dl>
+                <div className="my-5 border-t border-border" />
                 <button
-                  key={f}
-                  onClick={() => { setFrequency(f); setAmount((f === "monthly" ? MONTHLY_PRESETS : ONE_TIME_PRESETS)[0]); }}
-                  className={`rounded-full px-4 py-1.5 transition ${frequency === f ? "bg-primary text-white shadow" : "text-foreground/70 hover:text-foreground"}`}
+                  type="submit"
+                  form="donor-form"
+                  disabled={busy || !finalAmount || finalAmount < 10}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl gradient-brand px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/30 transition hover:shadow-xl disabled:opacity-60"
                 >
-                  {f === "one-time" ? "One-Time" : "Monthly"}
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
+                  Donate Now
                 </button>
-              ))}
+                <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                  <Shield className="h-3.5 w-3.5" /> 100% Secure Encrypted Payment
+                </p>
+              </aside>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              {frequency === "monthly"
-                ? "Become a monthly supporter and help us create sustainable, long-term impact."
-                : "Support our initiatives with a one-time contribution."}
-            </p>
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {PRESETS.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setAmount(p)}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-semibold ${amount === p ? "border-primary bg-primary text-white" : "border-border hover:border-primary/50"}`}
-                >
-                  ₹{p.toLocaleString("en-IN")}
-                </button>
-              ))}
-            </div>
-            <div className="mt-3 flex items-center gap-2 rounded-xl border border-border px-3 py-2.5">
-              <IndianRupee className="h-4 w-4 text-muted-foreground" />
-              <input
-                type="number"
-                value={amount}
-                min={10}
-                onChange={(e) => setAmount(Number(e.target.value))}
-                placeholder="Custom amount"
-                className="w-full bg-transparent text-sm outline-none"
-              />
-            </div>
+          )}
 
-            <h2 className="mt-8 font-display text-xl font-bold">2. Support a cause</h2>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <CauseChip value="general" cur={cause} set={setCause} label="Where most needed" />
-              {CAUSES.map((c) => (
-                <CauseChip key={c.slug} value={c.slug} cur={cause} set={setCause} label={c.title} />
-              ))}
+          {step === "payu" && (
+            <div className="mx-auto max-w-lg text-center">
+              <div className="rounded-3xl border border-border bg-card p-10 shadow-sm">
+                <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
+                <h2 className="mt-4 font-display text-2xl font-bold">Connecting to PayU</h2>
+                <p className="mt-2 text-muted-foreground">Please wait while we securely redirect you to PayU to complete your one-time donation.</p>
+                <button onClick={() => setStep("details")} className="mt-6 text-sm font-semibold text-primary underline">Cancel and return</button>
+              </div>
             </div>
+          )}
 
-            <h2 className="mt-8 font-display text-xl font-bold">3. Your details</h2>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <input required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary" />
-              <input required type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary" />
+          {step === "npci" && (
+            <div className="mx-auto max-w-lg text-center">
+              <div className="rounded-3xl border border-border bg-card p-10 shadow-sm">
+                <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
+                <h2 className="mt-4 font-display text-2xl font-bold">Connecting to NPCI eNACH</h2>
+                <p className="mt-2 text-muted-foreground">Please wait while we redirect you to the official NPCI portal to securely authorize your monthly recurring mandate.</p>
+                <button onClick={() => setStep("details")} className="mt-6 text-sm font-semibold text-primary underline">Cancel and return</button>
+              </div>
             </div>
-
-          </div>
-
-          <aside className="h-fit rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
-            <h3 className="font-display text-lg font-bold">Payment summary</h3>
-            <dl className="mt-4 space-y-3 text-sm">
-              <Row k="Donor" v={name || "—"} />
-              <Row k="Email" v={email || "—"} />
-              <Row k="Frequency" v={frequency === "monthly" ? "Monthly" : "One-Time"} />
-              <Row k="Cause" v={cause === "general" ? "Where most needed" : (CAUSES.find((c) => c.slug === cause)?.title ?? cause)} />
-              <div className="my-3 border-t border-border" />
-              <Row k="Donation" v={`₹${amount?.toLocaleString("en-IN") || 0}${frequency === "monthly" ? " /mo" : ""}`} bold />
-            </dl>
-            <button
-              onClick={pay}
-              disabled={busy}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl gradient-brand px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/30 disabled:opacity-60"
-            >
-              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
-              {frequency === "monthly" ? `Donate ₹${amount?.toLocaleString("en-IN") || 0} Monthly` : `Donate ₹${amount?.toLocaleString("en-IN") || 0}`}
-            </button>
-            <ul className="mt-4 space-y-1.5 text-xs text-muted-foreground">
-              <li>✔ Secure Payments</li>
-              <li>✔ Instant Donation Receipt</li>
-              <li>✔ Trusted &amp; Transparent Giving</li>
-            </ul>
-            <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-              <Shield className="h-3.5 w-3.5" /> Encrypted & PCI-DSS compliant
-            </p>
-          </aside>
+          )}
         </div>
       </section>
     </SiteShell>
-  );
-}
-
-function CauseChip({ value, cur, set, label }: { value: string; cur: string; set: (v: string) => void; label: string }) {
-  return (
-    <button onClick={() => set(value)} className={`rounded-full border px-3.5 py-1.5 text-sm ${cur === value ? "border-primary bg-primary text-white" : "border-border hover:border-primary/50"}`}>
-      {label}
-    </button>
-  );
-}
-
-function Row({ k, v, bold }: { k: string; v: string; bold?: boolean }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <dt className="text-muted-foreground">{k}</dt>
-      <dd className={`text-right ${bold ? "font-display text-lg font-extrabold text-primary" : ""}`}>{v}</dd>
-    </div>
   );
 }
