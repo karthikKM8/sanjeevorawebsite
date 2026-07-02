@@ -40,8 +40,7 @@ function DonatePage() {
   const navigate = useNavigate();
 
   const [frequency, setFrequency] = useState<"one-time" | "monthly">(sp.frequency ?? "one-time");
-  const [amount, setAmount] = useState<number | "custom">(sp.amount ?? 5000);
-  const [customAmount, setCustomAmount] = useState("");
+  const [amount, setAmount] = useState<number>(sp.amount ?? 5000);
   const [cause, setCause] = useState(sp.cause ?? CAUSES[0]);
 
   const [step, setStep] = useState<Step>("details");
@@ -62,12 +61,12 @@ function DonatePage() {
   });
 
   const PRESETS = frequency === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS;
-  const finalAmount = amount === "custom" ? Number(customAmount) : amount;
+  const finalAmount = amount;
 
   const handleDetailsSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!finalAmount || finalAmount < 10) {
-      return toast.error("Please enter a donation amount of at least ₹10");
+    if (!finalAmount || finalAmount < 500) {
+      return toast.error("It is financially unviable for us to process transactions which are less than 500 rupees");
     }
     if (!donor.name || !donor.phone || !donor.email || !donor.address || !donor.city || !donor.state || !donor.pincode) {
       return toast.error("Please fill all mandatory donor information fields");
@@ -123,7 +122,6 @@ function DonatePage() {
                             onClick={() => {
                               setFrequency(f);
                               setAmount((f === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS)[0]);
-                              setCustomAmount("");
                             }}
                             className={`rounded-lg px-6 py-2 transition ${frequency === f ? "bg-primary text-white shadow" : "text-foreground/70 hover:text-foreground"}`}
                           >
@@ -148,29 +146,23 @@ function DonatePage() {
                             ₹{p.toLocaleString("en-IN")}
                           </button>
                         ))}
-                        <button
-                          type="button"
-                          onClick={() => setAmount("custom")}
-                          className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
-                            amount === "custom" ? "border-primary bg-primary text-white" : "border-border bg-background hover:border-primary/50"
-                          }`}
-                        >
-                          Custom
-                        </button>
                       </div>
                       
-                      {amount === "custom" && (
-                        <div className="mt-3 flex max-w-xs items-center gap-2 rounded-xl border border-border bg-background px-3 py-2.5">
-                          <IndianRupee className="h-4 w-4 text-muted-foreground" />
-                          <input
-                            type="number"
-                            min={10}
-                            value={customAmount}
-                            onChange={(e) => setCustomAmount(e.target.value)}
-                            placeholder="Enter amount"
-                            className="w-full bg-transparent text-sm outline-none"
-                          />
-                        </div>
+                      <div className="mt-3 flex max-w-xs items-center gap-2 rounded-xl border border-border bg-background px-3 py-2.5">
+                        <IndianRupee className="h-4 w-4 text-muted-foreground" />
+                        <input
+                          type="number"
+                          min={500}
+                          value={amount || ""}
+                          onChange={(e) => setAmount(Number(e.target.value))}
+                          placeholder="Enter amount"
+                          className="w-full bg-transparent text-sm outline-none"
+                        />
+                      </div>
+                      {amount > 0 && amount < 500 && (
+                        <p className="mt-2 text-sm font-medium text-red-500">
+                          It is financially unviable for us to process transactions which are less than 500 rupees
+                        </p>
                       )}
                     </div>
 
@@ -195,18 +187,18 @@ function DonatePage() {
                   <form id="donor-form" onSubmit={handleDetailsSubmit} className="space-y-6">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Full Name *</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Full Name <span className="text-red-500">*</span></label>
                         <input required value={donor.name} onChange={(e) => setDonor({ ...donor, name: e.target.value })} placeholder="e.g. Rahul Kumar" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Mobile Number *</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Mobile Number <span className="text-red-500">*</span></label>
                         <input required type="tel" value={donor.phone} onChange={(e) => setDonor({ ...donor, phone: e.target.value })} placeholder="10-digit mobile number" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                       </div>
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Email Address *</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Email Address <span className="text-red-500">*</span></label>
                         <input required type="email" value={donor.email} onChange={(e) => setDonor({ ...donor, email: e.target.value })} placeholder="e.g. name@example.com" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                       </div>
                       <div>
@@ -216,28 +208,28 @@ function DonatePage() {
                     </div>
 
                     <div>
-                      <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Address *</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Address <span className="text-red-500">*</span></label>
                       <input required value={donor.address} onChange={(e) => setDonor({ ...donor, address: e.target.value })} placeholder="House/Flat No, Street, Landmark" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">City *</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">City <span className="text-red-500">*</span></label>
                         <input required value={donor.city} onChange={(e) => setDonor({ ...donor, city: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">State *</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">State <span className="text-red-500">*</span></label>
                         <input required value={donor.state} onChange={(e) => setDonor({ ...donor, state: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                       </div>
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Pincode *</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Pincode <span className="text-red-500">*</span></label>
                         <input required value={donor.pincode} onChange={(e) => setDonor({ ...donor, pincode: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Country *</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Country <span className="text-red-500">*</span></label>
                         <input required value={donor.country} onChange={(e) => setDonor({ ...donor, country: e.target.value })} className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                       </div>
                     </div>
@@ -276,7 +268,7 @@ function DonatePage() {
                 <button
                   type="submit"
                   form="donor-form"
-                  disabled={busy || !finalAmount || finalAmount < 10}
+                  disabled={busy || !finalAmount || finalAmount < 500}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl gradient-brand px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/30 transition hover:shadow-xl disabled:opacity-60"
                 >
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
