@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { Updates } from "@/components/sections/Updates";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -21,7 +20,6 @@ export const Route = createFileRoute("/events")({
           <p className="mt-3 max-w-2xl text-foreground/70">Come build with us — there's always a way to show up.</p>
         </div>
       </div>
-      <Updates />
     </SiteShell>
   ),
 });
