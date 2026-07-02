@@ -8,15 +8,15 @@ export function About() {
         <Reveal>
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">About Us</p>
-            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-              Building brighter futures, one child at a time.
+            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl uppercase">
+              FROM CLASSROOM TO CAREER
             </h2>
             <p className="mt-4 text-base text-foreground/70">
               Sanjeevora Vidya Mission is dedicated to creating meaningful, lasting
               change in the lives of underprivileged children and young adults.
               We believe every child deserves access to nutritious food, quality
               education, mentorship and opportunities — regardless of background.
-              Together with donors, volunteers, and partners, we are building
+              Our goal is simple: educate, elevate and empower. Together with donors, volunteers, and partners, we are building
               stronger communities where every child can dream, learn, and succeed.
             </p>
           </div>

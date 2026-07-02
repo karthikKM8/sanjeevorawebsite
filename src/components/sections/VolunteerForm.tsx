@@ -4,7 +4,7 @@ import { Loader2, HandHeart } from "lucide-react";
 import { insertVolunteer } from "@/lib/db";
 import { Reveal } from "../site/Reveal";
 
-const AREAS = ["Teach", "Mentor", "Create Content", "Support Events", "Partner With Us", "Nutrition Programs", "Career Readiness"];
+const AREAS = ["Teach", "Mentor", "Support Events", "Partner With Us", "Nutrition Programs", "Career Readiness"];
 
 export function VolunteerForm() {
   const [busy, setBusy] = useState(false);
@@ -42,17 +42,7 @@ export function VolunteerForm() {
                 Join our community of volunteers and help create brighter
                 futures for children and young adults.
               </p>
-              <div className="mt-6 grid grid-cols-2 gap-2 text-sm">
-                {[
-                  "👨‍🏫 Teach",
-                  "🤝 Mentor",
-                  "🎨 Create Content",
-                  "🎉 Support Events",
-                  "🏢 Partner With Us",
-                ].map((w) => (
-                  <div key={w} className="rounded-xl bg-white px-3 py-2 font-medium shadow-sm">{w}</div>
-                ))}
-              </div>
+
             </Reveal>
           </div>
           <form onSubmit={onSubmit} className="space-y-4 p-8 sm:p-10">

@@ -4,11 +4,7 @@ import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
 import { Causes } from "@/components/sections/Causes";
 import { Reality } from "@/components/sections/Reality";
-import { Stories } from "@/components/sections/Stories";
-import { HowItHelps } from "@/components/sections/HowItHelps";
 import { VolunteerForm } from "@/components/sections/VolunteerForm";
-import { Testimonials } from "@/components/sections/Testimonials";
-import { Updates } from "@/components/sections/Updates";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { Contact } from "@/components/sections/Contact";
 
@@ -32,11 +28,7 @@ function Index() {
       <About />
       <Causes />
       <Reality />
-      <HowItHelps />
-      <Stories />
       <VolunteerForm />
-      <Testimonials />
-      <Updates />
       <Newsletter />
       <Contact />
     </SiteShell>

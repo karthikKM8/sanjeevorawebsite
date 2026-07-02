@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Causes } from "@/components/sections/Causes";
-import { HowItHelps } from "@/components/sections/HowItHelps";
 
 export const Route = createFileRoute("/causes")({
   head: () => ({
@@ -23,7 +22,6 @@ export const Route = createFileRoute("/causes")({
         </div>
       </div>
       <Causes />
-      <HowItHelps />
     </SiteShell>
   ),
 });
