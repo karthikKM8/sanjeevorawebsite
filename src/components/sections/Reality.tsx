@@ -1,24 +1,30 @@
 import { Reveal } from "../site/Reveal";
-import { BookOpen, Utensils, GraduationCap } from "lucide-react";
+import { GraduationCap, AlertCircle, Wrench, Briefcase } from "lucide-react";
 
 const ITEMS = [
   {
-    icon: BookOpen,
-    stat: "1.17 Million",
-    title: "Children Are Out of School",
-    desc: "More than 1.17 million children across India remain out of school, denying them the education needed to build a brighter future.",
-  },
-  {
-    icon: Utensils,
-    stat: "35.5%",
-    title: "Children Under Five Are Stunted",
-    desc: "Over one-third of children under five suffer from chronic malnutrition, affecting growth, cognitive development, and ability to learn.",
-  },
-  {
     icon: GraduationCap,
-    stat: "1 in 10",
-    title: "Drop Out During Secondary",
-    desc: "Many students leave school before completing secondary education due to financial hardship, family responsibilities, and lack of resources.",
+    stat: "6.5 MILLION",
+    title: "SCHOOL DROPOUTS",
+    desc: "Children in India drop out of school every year.",
+  },
+  {
+    icon: AlertCircle,
+    stat: "6.7 MILLION",
+    title: "CHILD HUNGER",
+    desc: "Children in India suffer from hunger every day.",
+  },
+  {
+    icon: Wrench,
+    stat: "63%",
+    title: "LACK OF SKILLS",
+    desc: "Of India's youth lack employable skills required for jobs.",
+  },
+  {
+    icon: Briefcase,
+    stat: "15 MILLION",
+    title: "YOUTH UNEMPLOYMENT",
+    desc: "Young people in India are currently unemployed.",
   },
 ];
 
@@ -39,7 +45,7 @@ export function Reality() {
             </p>
           </div>
         </Reveal>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {ITEMS.map((it, i) => {
             const Icon = it.icon;
             return (
