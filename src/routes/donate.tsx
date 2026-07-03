@@ -62,11 +62,12 @@ function DonatePage() {
 
   const PRESETS = frequency === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS;
   const finalAmount = amount;
+  const minAmount = frequency === "one-time" ? 500 : 800;
 
   const handleDetailsSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!finalAmount || finalAmount < 500) {
-      return toast.error("It is financially unviable for us to process transactions which are less than 500 rupees");
+    if (!finalAmount || finalAmount < minAmount) {
+      return toast.error(`It is financially unviable for us to process transactions which are less than ${minAmount} rupees`);
     }
     if (!donor.name || !donor.phone || !donor.email || !donor.address || !donor.city || !donor.state || !donor.pincode) {
       return toast.error("Please fill all mandatory donor information fields");
@@ -152,16 +153,16 @@ function DonatePage() {
                         <IndianRupee className="h-4 w-4 text-muted-foreground" />
                         <input
                           type="number"
-                          min={500}
+                          min={minAmount}
                           value={amount || ""}
                           onChange={(e) => setAmount(Number(e.target.value))}
                           placeholder="Enter amount"
                           className="w-full bg-transparent text-sm outline-none"
                         />
                       </div>
-                      {amount > 0 && amount < 500 && (
+                      {amount > 0 && amount < minAmount && (
                         <p className="mt-2 text-sm font-medium text-red-500">
-                          It is financially unviable for us to process transactions which are less than 500 rupees
+                          It is financially unviable for us to process transactions which are less than {minAmount} rupees
                         </p>
                       )}
                     </div>
@@ -268,7 +269,7 @@ function DonatePage() {
                 <button
                   type="submit"
                   form="donor-form"
-                  disabled={busy || !finalAmount || finalAmount < 500}
+                  disabled={busy || !finalAmount || finalAmount < minAmount}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl gradient-brand px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/30 transition hover:shadow-xl disabled:opacity-60"
                 >
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
