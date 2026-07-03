@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import { Loader2, HandHeart } from "lucide-react";
+import { Loader2, HandHeart, HeartHandshake, Users, Megaphone } from "lucide-react";
 import { insertVolunteer } from "@/lib/db";
 import { Reveal } from "../site/Reveal";
 
@@ -42,6 +42,44 @@ export function VolunteerForm() {
                 Join our community of volunteers and help create brighter
                 futures for children and young adults.
               </p>
+              <div className="mt-8 grid grid-cols-2 gap-6">
+                <div className="flex flex-col items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <HeartHandshake className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold uppercase tracking-wider text-sm">Volunteer</h3>
+                    <p className="text-sm text-foreground/70">Be the Change</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <HandHeart className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold uppercase tracking-wider text-sm">Support</h3>
+                    <p className="text-sm text-foreground/70">Our Initiatives</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold uppercase tracking-wider text-sm">Collaborate</h3>
+                    <p className="text-sm text-foreground/70">For Greater Good</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Megaphone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold uppercase tracking-wider text-sm">Spread</h3>
+                    <p className="text-sm text-foreground/70">Awareness</p>
+                  </div>
+                </div>
+              </div>
 
             </Reveal>
           </div>

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/causes")({
     <SiteShell>
       <div className="gradient-soft py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Our Programs</h1>
+          <h1 className="font-display text-4xl font-extrabold sm:text-5xl uppercase">OUR FOCUSING AREAS</h1>
           <p className="mt-3 max-w-2xl text-foreground/70">Creating sustainable change through four core programs — nutrition, education, child development, and career readiness.</p>
         </div>
       </div>

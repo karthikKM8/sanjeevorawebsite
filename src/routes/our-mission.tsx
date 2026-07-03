@@ -37,10 +37,7 @@ function MissionPage() {
               </div>
               <h2 className="mt-5 font-display text-2xl font-bold">Our Mission</h2>
               <p className="mt-3 text-foreground/75">
-                To empower underprivileged children and young adults by
-                providing nutritious food, quality education, mentorship, skill
-                development, and career opportunities — enabling them to build
-                independent, confident, and meaningful lives.
+                To create meaningful impact through initiatives that support learning, growth, empowerment, and community development.
               </p>
             </div>
           </Reveal>
@@ -51,10 +48,7 @@ function MissionPage() {
               </div>
               <h2 className="mt-5 font-display text-2xl font-bold">Our Vision</h2>
               <p className="mt-3 text-foreground/75">
-                A future where every child, regardless of socioeconomic
-                background, has equal access to education, opportunity, and the
-                support needed to reach their full potential and become a
-                positive force in society.
+                To build a future where every individual has access to opportunities, guidance, and resources to grow and thrive.
               </p>
             </div>
           </Reveal>

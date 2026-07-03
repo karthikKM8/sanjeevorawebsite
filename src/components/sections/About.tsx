@@ -8,8 +8,8 @@ export function About() {
         <Reveal>
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">About Us</p>
-            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl uppercase">
-              FROM CLASSROOM TO CAREER
+            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+              From Classroom to Career
             </h2>
             <p className="mt-4 text-base text-foreground/70">
               Sanjeevora Vidya Mission is dedicated to creating meaningful, lasting
