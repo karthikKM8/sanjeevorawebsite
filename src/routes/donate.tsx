@@ -197,15 +197,9 @@ function DonatePage() {
                       </div>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Email Address <span className="text-red-500">*</span></label>
-                        <input required type="email" value={donor.email} onChange={(e) => setDonor({ ...donor, email: e.target.value })} placeholder="e.g. name@example.com" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
-                      </div>
-                      <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-foreground/80">PAN Number</label>
-                        <input value={donor.pan} onChange={(e) => setDonor({ ...donor, pan: e.target.value })} placeholder="For 80G tax receipt" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
-                      </div>
+                    <div>
+                      <label className="mb-1.5 block text-sm font-semibold text-foreground/80">Email Address <span className="text-red-500">*</span></label>
+                      <input required type="email" value={donor.email} onChange={(e) => setDonor({ ...donor, email: e.target.value })} placeholder="e.g. name@example.com" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
                     </div>
 
                     <div>
@@ -236,10 +230,7 @@ function DonatePage() {
                     </div>
 
                     <div className="space-y-3 pt-2">
-                      <label className="flex items-start gap-3">
-                        <input type="checkbox" checked={donor.taxExempt} onChange={(e) => setDonor({ ...donor, taxExempt: e.target.checked })} className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary" />
-                        <span className="text-sm text-foreground/80">I wish to receive an 80G tax exemption receipt for this donation. (Valid PAN required)</span>
-                      </label>
+
                       <label className="flex items-start gap-3">
                         <input type="checkbox" checked={donor.consent} onChange={(e) => setDonor({ ...donor, consent: e.target.checked })} className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary" />
                         <span className="text-sm text-foreground/80">I agree to the Terms & Conditions and Privacy Policy, and consent to be contacted regarding my donation.</span>
