@@ -2,8 +2,53 @@ import { motion } from "framer-motion";
 
 export function BankDetails() {
   return (
-    <section className="relative overflow-hidden bg-background py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-transparent py-10 sm:py-16">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center"
+        >
+          <h2 className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl mb-4">
+            Donate now to change someone's life!
+          </h2>
+          <p className="text-base text-foreground/80 mb-8 max-w-xl">
+            You can do a bank transfer to the account details below. You can also use any UPI/BHIM payment, like PayTM, GPay, PhonePe, etc.
+          </p>
+          
+          <div className="w-full max-w-2xl rounded-2xl border border-border/50 bg-background/50 p-6 sm:p-8 text-left space-y-4 text-base sm:text-lg shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border/50 pb-3">
+              <span className="text-muted-foreground mb-1 sm:mb-0">Account name:</span>
+              <span className="font-bold text-foreground">SANJEEVORA VIDYA MISSION</span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border/50 pb-3">
+              <span className="text-muted-foreground mb-1 sm:mb-0">Bank name:</span>
+              <span className="font-bold text-foreground">IDFC FIRST</span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border/50 pb-3">
+              <span className="text-muted-foreground mb-1 sm:mb-0">Account number:</span>
+              <span className="font-bold text-foreground">10291782057</span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border/50 pb-3">
+              <span className="text-muted-foreground mb-1 sm:mb-0">Branch:</span>
+              <span className="font-bold text-foreground">R T NAGAR BRANCH</span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border/50 pb-3">
+              <span className="text-muted-foreground mb-1 sm:mb-0">SWIFT code:</span>
+              <span className="font-bold text-foreground">IDFBINBBMUM</span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between">
+              <span className="text-muted-foreground mb-1 sm:mb-0">IFSC:</span>
+              <span className="font-bold text-foreground">IDFB0080167</span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ORIGINAL 2-COLUMN LAYOUT (KEPT FOR FUTURE USE)
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-24">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -28,7 +73,6 @@ export function BankDetails() {
             </div>
           </motion.div>
 
-          {/* 
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -71,9 +115,9 @@ export function BankDetails() {
               </div>
             </div>
           </motion.div>
-          */}
         </div>
       </div>
+      */}
     </section>
   );
 }

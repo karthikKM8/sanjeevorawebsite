@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { CreditCard, Loader2, Shield, IndianRupee, ArrowLeft } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
+import { BankDetails } from "@/components/sections/BankDetails";
 import { toast } from "sonner";
 
 const search = z.object({
@@ -80,7 +81,7 @@ function DonatePage() {
     if (frequency === "one-time") {
       setStep("payu");
       setTimeout(() => {
-        toast.success("Redirecting to PayU Checkout...");
+        toast.success("Please complete the transfer using the bank details provided.");
         setBusy(false);
       }, 1500);
     } else {
@@ -274,12 +275,12 @@ function DonatePage() {
           )}
 
           {step === "payu" && (
-            <div className="mx-auto max-w-lg text-center">
-              <div className="rounded-3xl border border-border bg-card p-10 shadow-sm">
-                <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
-                <h2 className="mt-4 font-display text-2xl font-bold">Connecting to PayU</h2>
-                <p className="mt-2 text-muted-foreground">Please wait while we securely redirect you to PayU to complete your one-time donation.</p>
-                <button onClick={() => setStep("details")} className="mt-6 text-sm font-semibold text-primary underline">Cancel and return</button>
+            <div className="mx-auto w-full">
+              <div className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
+                <BankDetails />
+                <div className="pb-10 text-center">
+                  <button onClick={() => setStep("details")} className="text-sm font-semibold text-primary underline">Return to Details</button>
+                </div>
               </div>
             </div>
           )}
