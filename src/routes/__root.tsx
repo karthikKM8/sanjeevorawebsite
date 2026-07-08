@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import faviconUrl from "../assets/sanjeevora logo.jpeg";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
@@ -94,6 +95,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      {
+        rel: "icon",
+        href: faviconUrl,
+      },
       {
         rel: "stylesheet",
         href: appCss,
