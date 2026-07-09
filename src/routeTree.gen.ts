@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as OurMissionRouteImport } from './routes/our-mission'
+import { Route as LogoPreviewRouteImport } from './routes/logo-preview'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DonateRouteImport } from './routes/donate'
@@ -37,6 +38,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const OurMissionRoute = OurMissionRouteImport.update({
   id: '/our-mission',
   path: '/our-mission',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LogoPreviewRoute = LogoPreviewRouteImport.update({
+  id: '/logo-preview',
+  path: '/logo-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/donate': typeof DonateRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/logo-preview': typeof LogoPreviewRoute
   '/our-mission': typeof OurMissionRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/volunteer': typeof VolunteerRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/donate': typeof DonateRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/logo-preview': typeof LogoPreviewRoute
   '/our-mission': typeof OurMissionRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/volunteer': typeof VolunteerRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/donate': typeof DonateRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/logo-preview': typeof LogoPreviewRoute
   '/our-mission': typeof OurMissionRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/volunteer': typeof VolunteerRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/events'
     | '/gallery'
+    | '/logo-preview'
     | '/our-mission'
     | '/sitemap.xml'
     | '/volunteer'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/events'
     | '/gallery'
+    | '/logo-preview'
     | '/our-mission'
     | '/sitemap.xml'
     | '/volunteer'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/events'
     | '/gallery'
+    | '/logo-preview'
     | '/our-mission'
     | '/sitemap.xml'
     | '/volunteer'
@@ -204,6 +216,7 @@ export interface RootRouteChildren {
   DonateRoute: typeof DonateRouteWithChildren
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  LogoPreviewRoute: typeof LogoPreviewRoute
   OurMissionRoute: typeof OurMissionRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VolunteerRoute: typeof VolunteerRoute
@@ -230,6 +243,13 @@ declare module '@tanstack/react-router' {
       path: '/our-mission'
       fullPath: '/our-mission'
       preLoaderRoute: typeof OurMissionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logo-preview': {
+      id: '/logo-preview'
+      path: '/logo-preview'
+      fullPath: '/logo-preview'
+      preLoaderRoute: typeof LogoPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -336,6 +356,7 @@ const rootRouteChildren: RootRouteChildren = {
   DonateRoute: DonateRouteWithChildren,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  LogoPreviewRoute: LogoPreviewRoute,
   OurMissionRoute: OurMissionRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VolunteerRoute: VolunteerRoute,
