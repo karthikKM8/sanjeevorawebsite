@@ -80,6 +80,11 @@ export function Footer() {
             <a href="#" className="hover:text-primary">Terms &amp; Conditions</a>
             <a href="#" className="hover:text-primary">Refund Policy</a>
           </div>
+          <div className="mt-4 flex flex-col items-center justify-center gap-2 text-xs text-muted-foreground sm:flex-row sm:gap-4">
+            <span className="font-semibold text-foreground/80">CIN Number: U85499KA2026NPL223079</span>
+            <span className="hidden text-border sm:inline">|</span>
+            <span className="font-semibold text-foreground/80">GST: 29ABUCS1757Q1Z3</span>
+          </div>
           <div className="mt-4 flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
             <p>© 2026 Sanjeevora Vidya Mission. All Rights Reserved.</p>
             <p>Empowering Children Through Food, Education, Opportunity &amp; Hope.</p>
