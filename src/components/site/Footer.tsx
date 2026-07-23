@@ -76,9 +76,9 @@ export function Footer() {
         </div>
         <div className="mt-12 border-t border-border pt-6">
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
-            <a href="#" className="hover:text-primary">Privacy Policy</a>
-            <a href="#" className="hover:text-primary">Terms &amp; Conditions</a>
-            <a href="#" className="hover:text-primary">Refund Policy</a>
+            <a href="/PrivacyPolicy-sanjeevora.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-primary">Privacy Policy</a>
+            <a href="/TermsandConditions-sanjeevora.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-primary">Terms &amp; Conditions</a>
+            <a href="/FAQs-sanjeevora.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-primary">FAQs</a>
           </div>
           <div className="mt-4 flex flex-col items-center justify-center gap-2 text-xs text-muted-foreground sm:flex-row sm:gap-4">
             <span className="font-semibold text-foreground/80">CIN Number: U85499KA2026NPL223079</span>
