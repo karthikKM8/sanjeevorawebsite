@@ -70,7 +70,6 @@ export function Footer() {
             </Link>
             <ul className="mt-5 space-y-1.5 text-xs text-muted-foreground">
               <li><Link to="/volunteer" className="hover:text-primary">Volunteer with us</Link></li>
-              <li><Link to="/contact" className="hover:text-primary">Partner with us</Link></li>
             </ul>
           </div>
         </div>
