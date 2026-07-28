@@ -6,7 +6,6 @@ import { About } from "@/components/sections/About";
 import { Causes } from "@/components/sections/Causes";
 import { Reality } from "@/components/sections/Reality";
 import { VolunteerForm } from "@/components/sections/VolunteerForm";
-import { Newsletter } from "@/components/sections/Newsletter";
 import { Contact } from "@/components/sections/Contact";
 
 export const Route = createFileRoute("/")({
@@ -31,7 +30,6 @@ function Index() {
       <Causes />
       <Reality />
       <VolunteerForm />
-      <Newsletter />
       <Contact />
     </SiteShell>
   );

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Youtube, Mail, MapPin, Phone, Heart } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone, Heart, Shield } from "lucide-react";
 import logo from "@/assets/sanjeevora logo.jpeg";
 
 export function Footer() {
@@ -18,16 +18,50 @@ export function Footer() {
               opportunities — so every child can dream, learn, and succeed.
             </p>
             <div className="mt-4 flex gap-2">
-              {[Facebook, Instagram, Linkedin, Youtube].map((Icon, i) => (
+              {[
+                { Icon: Facebook, href: "https://www.facebook.com/share/1EQFyKthtz/?mibextid=wwXIfr", label: "Facebook" },
+                { Icon: Instagram, href: "https://www.instagram.com/sanjeevoravidyamission?igsh=cWFocW9jeGx0dms=", label: "Instagram" }
+              ].map(({ Icon, href, label }) => (
                 <a
-                  key={i}
-                  href="#"
-                  aria-label="social"
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
                   className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-primary shadow-sm transition-colors hover:bg-primary hover:text-white"
                 >
                   <Icon className="h-4 w-4" />
                 </a>
               ))}
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-border bg-card/60 p-4 shadow-sm">
+              <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                <Shield className="h-4 w-4 text-emerald-600" />
+                <span>Certified NGO</span>
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-x-2 text-xs">
+                <a
+                  href="/12A Certificate.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-foreground underline decoration-primary/40 underline-offset-2 hover:text-primary transition-colors"
+                >
+                  12A Registered
+                </a>
+                <span className="text-muted-foreground">•</span>
+                <a
+                  href="/80G Certificate.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-foreground underline decoration-primary/40 underline-offset-2 hover:text-primary transition-colors"
+                >
+                  80G Approved
+                </a>
+              </div>
+              <p className="mt-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                Tax Benefits Available
+              </p>
             </div>
           </div>
           <div>
@@ -51,7 +85,7 @@ export function Footer() {
             <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
               <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-primary" /> No. 33, Top Floor, CBI Main Road, Pilappa Garden, Ganganagar, Bengaluru – 560032</li>
               <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-primary" /> +91 70198 27645</li>
-              <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-primary" /> hello@sanjeevora.org</li>
+              <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-primary" /> info@sanjeevoravidyamission.com</li>
             </ul>
           </div>
           <div>

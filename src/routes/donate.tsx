@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { z } from "zod";
 import { CreditCard, Loader2, Shield, IndianRupee, ArrowLeft } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BankDetails } from "@/components/sections/BankDetails";
 import { toast } from "sonner";
+import { insertDonation } from "@/lib/db";
 
 const search = z.object({
   amount: z.coerce.number().min(10).optional(),
@@ -64,6 +65,38 @@ function DonatePage() {
   const PRESETS = frequency === "one-time" ? ONE_TIME_PRESETS : MONTHLY_PRESETS;
   const finalAmount = amount;
   const minAmount = frequency === "one-time" ? 500 : 800;
+
+  useEffect(() => {
+    if (step !== "npci") return;
+    const timer = setTimeout(async () => {
+      try {
+        const refNo = "ENACH-" + Math.floor(100000 + Math.random() * 900000);
+        const result = await insertDonation({
+          donor_name: donor.name,
+          donor_email: donor.email,
+          amount: finalAmount,
+          cause: cause,
+          payment_gateway: "NPCI eNACH",
+          payment_status: "active",
+          payment_reference: refNo,
+        });
+        navigate({
+          to: "/donate/thank-you",
+          search: {
+            name: donor.name,
+            amount: finalAmount,
+            ref: refNo,
+            id: result?.id,
+          }
+        });
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to register donation. Please try again.");
+        setStep("details");
+      }
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [step, donor.name, donor.email, finalAmount, cause, navigate]);
 
   const handleDetailsSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -270,16 +303,110 @@ function DonatePage() {
                 <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                   <Shield className="h-3.5 w-3.5" /> 100% Secure Encrypted Payment
                 </p>
+                <div className="mt-6 rounded-2xl border border-border/80 bg-background/50 p-4 text-center">
+                  <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-foreground">
+                    <Shield className="h-3.5 w-3.5 text-emerald-600" />
+                    <span>Certified NGO</span>
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap justify-center items-center gap-x-2 text-[11px]">
+                    <a
+                      href="/12A Certificate.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-foreground underline decoration-primary/40 underline-offset-2 hover:text-primary transition-colors"
+                    >
+                      12A Registered
+                    </a>
+                    <span className="text-muted-foreground">•</span>
+                    <a
+                      href="/80G Certificate.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-foreground underline decoration-primary/40 underline-offset-2 hover:text-primary transition-colors"
+                    >
+                      80G Approved
+                    </a>
+                  </div>
+                  <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    Tax Benefits Available
+                  </p>
+                </div>
               </aside>
             </div>
           )}
 
           {step === "payu" && (
-            <div className="mx-auto w-full">
+            <div className="mx-auto w-full max-w-4xl space-y-6">
               <div className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
                 <BankDetails />
-                <div className="pb-10 text-center">
-                  <button onClick={() => setStep("details")} className="text-sm font-semibold text-primary underline">Return to Details</button>
+                <div className="border-t border-border bg-muted/30 p-6 sm:p-8">
+                  <div className="mx-auto max-w-lg">
+                    <h3 className="font-display text-lg font-bold text-center">Submit Payment Reference</h3>
+                    <p className="mt-1 text-center text-xs text-muted-foreground">
+                      Once you have completed the bank transfer or scanned the QR code, please paste your transaction ID / UTR number below to receive your 80G tax benefits.
+                    </p>
+                    
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      const fd = new FormData(e.currentTarget);
+                      const utr = String(fd.get("utr") || "").trim();
+                      if (!utr) return toast.error("Please enter your payment reference / UTR number.");
+                      
+                      setBusy(true);
+                      try {
+                        const result = await insertDonation({
+                          donor_name: donor.name,
+                          donor_email: donor.email,
+                          amount: finalAmount,
+                          cause: cause,
+                          payment_gateway: "UPI/Bank Transfer",
+                          payment_status: "pending_verification",
+                          payment_reference: utr,
+                        });
+                        
+                        navigate({
+                          to: "/donate/thank-you",
+                          search: {
+                            name: donor.name,
+                            amount: finalAmount,
+                            ref: utr,
+                            id: result?.id,
+                          }
+                        });
+                      } catch (err) {
+                        console.error(err);
+                        toast.error("Could not register your reference. Please contact support.");
+                      } finally {
+                        setBusy(false);
+                      }
+                    }} className="mt-4 space-y-4">
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-foreground/80">Transaction ID / UTR Reference Number</label>
+                        <input
+                          required
+                          name="utr"
+                          placeholder="e.g. 12-digit UTR or UPI Transaction ID"
+                          className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-3 pt-2">
+                        <button
+                          disabled={busy}
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-xl gradient-brand px-5 py-3 text-sm font-semibold text-white shadow disabled:opacity-60"
+                        >
+                          {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+                          I have Transferred & Submitted Details
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setStep("details")}
+                          className="text-xs font-semibold text-muted-foreground hover:text-primary transition-colors underline"
+                        >
+                          Go back to details
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>

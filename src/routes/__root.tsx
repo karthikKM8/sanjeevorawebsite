@@ -120,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             addressRegion: "Karnataka",
             addressCountry: "IN",
           },
-          email: "hello@sanjeevora.org",
+          email: "info@sanjeevoravidyamission.com",
           telephone: "+91 70198 27645",
         }),
       },
