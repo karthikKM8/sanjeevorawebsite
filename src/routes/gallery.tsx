@@ -46,7 +46,7 @@ function GalleryPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Gallery</h1>
           <p className="mt-3 max-w-2xl text-foreground/70">
-            Moments from the field — the children, communities, and journey
+            Moments from the field — the children, communities, and journeys
             your support makes possible.
           </p>
         </div>
